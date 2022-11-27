@@ -23,6 +23,7 @@ Our team consists of the following members, listed in the table below (the team 
 | 123030245  | 万茜         | 119010289@link.cuhk.edu.cn |
 | 123020245  | 张泽萱        | 120090674@link.cuhk.edu.cn |
 | 120090133  | 徐康裕        | 120090133@link.cuhk.edu.cn |
+| 120090533  | 周泽睿        | 120090533@link.cuhk.edu.cn |
 
 ## Project Specification
 
