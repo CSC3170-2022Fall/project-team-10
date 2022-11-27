@@ -7,8 +7,8 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
 
 <!-- Please fill in "x" to replace the blank space between "[]" to tick the todo item; it's ticked on the first one by default. -->
 
-- [x] **Application with Database System(s)**
-- [ ] **Implementation of a Database System**
+- [ ] **Application with Database System(s)**
+- [x] **Implementation of a Database System**
 
 ## Team Members
 
