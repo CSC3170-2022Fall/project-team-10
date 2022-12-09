@@ -37,7 +37,9 @@ After thorough discussion, our team made the choice and the specification inform
 
 ## Project Abstract
 Our goal of this project is to simulate a simplified relational database management system (DBMS), which is option 3 of the course project. This simplified DBMS can handle the basic tasks of a typical DBMS. The users can interact with this simplified DBMS using SQL commands.
+
 To complete the test, our group uses python to develop this project. The source code of this project is divided into several python files. These files includes one main file, which will be executed by the user to start the interaction with the DBMS, one interpreter file, which interpret the commands the users put in the terminal, and other files to handle each type of commands.
+
 If the project is developed successfully, the users can interact with this DBMS through typing SOL commands into the terminal. The DBMS can interpret these commands and do the corresponding operations. The data managed by this DBMS will be stored in .db files.
 
 
