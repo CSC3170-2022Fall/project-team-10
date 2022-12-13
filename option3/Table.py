@@ -4,5 +4,5 @@ class Table:
         self.column = [] # a list of column names
         self.data = [] # a list of rows
     
-    def join():
+    def join(self):
         pass
