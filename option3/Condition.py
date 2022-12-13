@@ -1,9 +1,10 @@
 class Condition:
-    left = ""
-    left_type = "" # 'int'/ 'float' / 'string' / 'column'
-    relation = "" # > < >= <= == !=
-    right = ""
-    right_type = ""
+    def __init__(self):
+        self.left = ""
+        self.left_type = "" # 'int'/ 'float' / 'string' / 'column'
+        self.relation = "" # > < >= <= == !=
+        self.right = ""
+        self.right_type = ""
     
 #e.g if the condition is student_name == 'Tom'
 # left = "student_name"
