@@ -5,6 +5,8 @@ class Table:
         self.data = [] # a list of rows
         self.coltype = [] # type of each column
         self.notnull = [] # notnull: 1, default: 0
+        self.dflt_value = [] # default value. default is None
+        self.pk = [] # primary key: 1, default:0 
     
     def join():
         pass
