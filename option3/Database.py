@@ -21,7 +21,7 @@ class Database:
             pass
         return
 
-    def create_table():
+    def create_table(self):
         pass
     
     def load(self, name): # name: string
