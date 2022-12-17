@@ -222,9 +222,30 @@ class Database:
         ''' 
         1. condi is the sub-condition in the "condition" list
         '''
+        # 单table select
+        if len(table) == 1:
+            new_table = Table()
+            for i in range(len(self.tables)):
+                if self.tables[i].name == table[0]:
+                    ori_table = self.tables[i]
+                    break
+
+            for k in range(len(column)):
+                for j in range(len(ori_table.column)):
+                    if column[k] == ori_table.column[j]:
+                        new_table.column.append(ori_table.column[j])
+                        new_table.coltype.append(ori_table.coltype[j])
+                        new_table.notnull.append(ori_table.notnull[j])
+                        new_table.coltype.append(ori_table.coltype[j])
+            pass
+
+        # 多table select
+        else:
+            
 
         # check whether the condition list is empty
         if len(condition) == 0:
+            
             new_table = Table()
             for col in column:
                 new_table.append
