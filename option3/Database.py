@@ -202,6 +202,7 @@ class Database:
         pass
     
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
+        # condition的样例
         #e.g if the condition is student_name == 'Tom'
         # left = "student_name"
         # left_type = "column" 
@@ -209,6 +210,7 @@ class Database:
         # right = "Tom"
         # right_type = "string"
 
+        # table 的属性：
         # self.name = ""
         # self.column = [] # a list of column names
         # self.data = [] # a list of string rows
@@ -223,6 +225,10 @@ class Database:
 
         # check whether the condition list is empty
         if len(condition) == 0:
+            new_table = Table()
+            for col in column:
+                new_table.append
+
             pass
         
         # check all the condition in the condition list and return all the columns and rows satisfies the confitions
@@ -240,7 +246,6 @@ class Database:
                 pass
             else:
                 print("Error: The condition's relation does not exist.")
-
         # natural join
 
 
