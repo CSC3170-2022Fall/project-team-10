@@ -224,8 +224,8 @@ class Database:
         # check whether the condition list is empty
         if len(condition) == 0:
             pass
-
-        # check all the condition in the condition list
+        
+        # check all the condition in the condition list and return all the columns and rows satisfies the confitions
         for condi in condition:
             if condi.relation == "==":
                 
