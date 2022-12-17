@@ -202,6 +202,38 @@ class Database:
         pass
     
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
+        #e.g if the condition is student_name == 'Tom'
+        # left = "student_name"
+        # left_type = "column" 
+        # relation = "==" 
+        # right = "Tom"
+        # right_type = "string"
+
+        # self.name = ""
+        # self.column = [] # a list of column names
+        # self.data = [] # a list of string rows
+        # self.coltype = [] # type of each column
+        # self.notnull = [] # notnull: 1, default: 0
+        # self.dflt_value = [] # default value
+        # self.pk = [] # primary key: 1, default: 0
+
+        for condi in condition:
+            if condi.relation == "==":
+                
+                pass
+            elif condi.relation ==">=":
+                pass
+            elif condi.relation == ">":
+                pass
+            elif condi.relation == "<=":
+                pass
+            elif condi.relation == "<":
+                pass
+            else:
+                print("Error: The condition's relation does not exist.")
+
+
+
         pass
 
 >>>>>>> refs/remotes/origin/main
