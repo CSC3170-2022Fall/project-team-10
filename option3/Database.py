@@ -229,16 +229,23 @@ class Database:
                 if self.tables[i].name == table[0]:
                     ori_table = self.tables[i]
                     break
-
+            # 更新new_table的columns
+            ind = []
             for k in range(len(column)):
                 for j in range(len(ori_table.column)):
                     if column[k] == ori_table.column[j]:
                         new_table.column.append(ori_table.column[j])
                         new_table.coltype.append(ori_table.coltype[j])
                         new_table.notnull.append(ori_table.notnull[j])
-                        new_table.coltype.append(ori_table.coltype[j])
-            pass
-
+                        new_table.dflt_value.append(ori_table.dflt_value[j])
+                        new_table.pk.append(ori_table.pk[j])
+            # 更新new_table的datas
+            for ori_data in ori_table.data:
+                new_data = []
+                for id in ind:
+                    new_data.append(ori_data[id])
+                new_table.data.append(new_data)
+            
         # 多table select
         else:
             
