@@ -216,7 +216,16 @@ class Database:
         # self.notnull = [] # notnull: 1, default: 0
         # self.dflt_value = [] # default value
         # self.pk = [] # primary key: 1, default: 0
+        
+        ''' 
+        1. condi is the sub-condition in the "condition" list
+        '''
 
+        # check whether the condition list is empty
+        if len(condition) == 0:
+            pass
+
+        # check all the condition in the condition list
         for condi in condition:
             if condi.relation == "==":
                 
@@ -231,6 +240,8 @@ class Database:
                 pass
             else:
                 print("Error: The condition's relation does not exist.")
+
+        # natural join
 
 
 
