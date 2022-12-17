@@ -220,7 +220,10 @@ class Database:
         # self.pk = [] # primary key: 1, default: 0
         
         ''' 
-        1. condi is the sub-condition in the "condition" list
+        1. new_table 根据column和condition连接的新表
+        2. ori_table 数据库中的原表
+        3. result_table 返回的结果无名表
+        4. ind[] 原表中所需的column的index
         '''
         # 单table select
         if len(table) == 1:
@@ -239,15 +242,59 @@ class Database:
                         new_table.notnull.append(ori_table.notnull[j])
                         new_table.dflt_value.append(ori_table.dflt_value[j])
                         new_table.pk.append(ori_table.pk[j])
-            # 更新new_table的datas
-            for ori_data in ori_table.data:
-                new_data = []
-                for id in ind:
-                    new_data.append(ori_data[id])
-                new_table.data.append(new_data)
-            
+
+            # 根据condition选数据
+            for j in range(len(ori_table.column)):
+                if ori_table.column[j] == condition.left:
+                    if ori_table.coltype != condition.right_type:
+                        print("Error: The left and right data types of condi do not match")
+                        return
+                    for id in range(len(ori_table.data)):
+                        data = ori_table.data[id]
+                        if condition.relation == "==" and str(data[j]) == condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue
+                        
+                        if condition.relation == "<=" and str(data[j]) <= condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue
+
+                        if condition.relation == ">=" and str(data[j]) >= condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue                               
+
+                        if condition.relation == "<" and str(data[j]) < condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue           
+
+                        if condition.relation == ">" and str(data[j]) > condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue            
+
+                        if condition.relation == "!=" and str(data[j]) != condition.right:
+                            new_data = []
+                            for idx in ind:
+                                new_data.append(data[idx])
+                            continue
+                    return new_table
+
+
+                                
+
         # 多table select
         else:
+            
+
             
 
         # check whether the condition list is empty
