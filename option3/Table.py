@@ -9,5 +9,5 @@ class Table:
         self.dflt_value = [] # default value
         self.pk = [] # primary key: 1, default: 0
     
-    def join():
+    def join(table): # This part should return a new table by Cartesian product of two table
         pass
