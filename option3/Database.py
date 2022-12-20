@@ -26,9 +26,10 @@ class Database:
 
     def do_command(self, command): # command: class Command
         if (command.type == "create table"):
-            pass
+            self.create_table(command.name[0], command.column)
         elif (command.type == "create table as"):
-            pass
+            selected  = self.select(command.column, command.name[1:], command.condition)
+            self.create_table(command.name[0], selected)
         elif (command.type == "load"):
             self.load(command.name[0])
         elif (command.type == "store"):
@@ -43,8 +44,27 @@ class Database:
             pass
         return
 
-    def create_table(self):
-        pass
+    def create_table(self, table_name, column_name):
+        for i in range(len(self.tables)):
+            if self.tables[i].name == table_name:
+                self.tables.pop(i)
+                break
+        table = Table()
+        table.name = table_name
+        for name in column_name:
+            table.column.append(name)
+        self.tables.append(table)
+        return
+
+    def create_table_as(self, table_name, selected):
+        for i in range(len(self.tables)):
+            if self.tables[i].name == table_name:
+                self.tables.pop(i)
+                break
+        table = selected
+        table.name = table_name
+        self.tables.append(table)
+        return 
     
     def load(self, file_name): # file_name: string
         # Get table names from file
