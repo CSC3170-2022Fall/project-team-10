@@ -11,8 +11,8 @@ def main():
         instr = input()
         try:
             cmd = interpreter(instr)    # go to interpreter
+            quit_flag = database.do_command(cmd)
         except Exception as error_flag:
             print(error_flag)
-        quit_flag = database.do_command(cmd)
 
 main()
