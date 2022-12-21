@@ -1,5 +1,5 @@
 class Table:    
-    #  Possible value for coltype: int(), float(,), char(), varchar(), text
+    #  Possible value for coltype: int(), numeric(,), char(), varchar(), text
     def __init__(self):
         self.name = ""
         self.column = [] # a list of column names
