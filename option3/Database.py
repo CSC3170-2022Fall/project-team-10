@@ -1,25 +1,8 @@
+import os
 import sqlite3
 from Table import Table
 
-<<<<<<< HEAD
-    def create_table():
-        return
 
-    def load(name): # name: string
-    
-    def store(name): # name: string
-        
-    def insert(name): # name: string
-        
-    def print(name): # name: string
-    
-    def quit():
-    
-    def select(column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
-        # return a table needed
-        
-        return 
-=======
 class Database:
     def __init__(self):
         self.tables = [] # a list of class Table
@@ -39,10 +22,10 @@ class Database:
         elif (command.type == "print"):
             self.print(command.name[0])
         elif ((command.type == "quit") or (command.type == "exit")):
-            self.quit()
+            return -1
         elif (command.type == "select"):
             pass
-        return
+        return 0
 
     def create_table(self, table_name, column_name):
         for i in range(len(self.tables)):
@@ -65,9 +48,12 @@ class Database:
         table.name = table_name
         self.tables.append(table)
         return 
-    
+
     def load(self, file_name): # file_name: string
         # Get table names from file
+        if (not os.path.exists(file_name + ".db")):
+            print("Error: File doesn't exist.")
+            return -1
         conn = sqlite3.connect(file_name + ".db")
         cursor = conn.cursor()
         cursor.execute("select name from sqlite_master where type = 'table'")
@@ -98,16 +84,21 @@ class Database:
                     new_table.data.append(list(j))
                 self.tables.append(new_table)
         conn.close()
-        return
+        return 0
 
     def store(self, table_name): # table_name: string
-        conn = sqlite3.connect(table_name + ".db")
-        cursor = conn.cursor
         # Find corresponding Table object
+        flag = -1
         for i in range(len(self.tables)):
             if (self.tables[i].name == table_name):
                 table = self.tables[i]
+                flag = 0
                 break
+        if (flag == -1):
+            print("Error: Table doesn't exist.")
+            return -1
+        conn = sqlite3.connect(table_name + ".db")
+        cursor = conn.cursor()
         # Drop old table if it exists
         cursor.execute("drop table if exists %s" %table_name)
         # Create new table
@@ -119,31 +110,43 @@ class Database:
             create_sql += table.coltype[i]
             if (table.notnull[i] != 0):
                 create_sql += " not null"
-            create_sql += " default "
-            create_sql += table.dflt_value[i]
+            if (table.dflt_value[i] != None):
+                create_sql += " default "
+                create_sql += table.dflt_value[i]
             if (table.pk[i] == 1):
                 pk.append(table.column[i])
+            if (i != len(table.column) - 1):
+                create_sql += ", "
+        if (pk != []):
             create_sql += ", "
-        create_sql += "primary key "
-        create_sql += str(tuple(pk))
+            create_sql += "primary key "
+            create_sql += str(tuple(pk))
         create_sql += ")"
         cursor.execute(create_sql)
         # Insert data to the table
         for i in range(len(table.data)):
             insert_sql = "insert into %s values " %table_name
-            insert_sql += str(table.data[i])
+            insert_sql += str(tuple(table.data[i]))
             cursor.execute(insert_sql)
         conn.commit()
         conn.close()
-        return
+        return 0
 
     # Return 0 for normally terminates, return -1 for terminates with error
     def insert(self, table_name, literal): # name: string, literal: string tuple
         # Find corresponding Table object
+        flag = -1
         for i in range(len(self.tables)):
             if (self.tables[i].name == table_name):
                 table = self.tables[i]
+                flag = 0
                 break
+        if (flag == -1):
+            print("Error: Table doesn't exist.")
+            return -1
+        if (len(literal) != len(table.column)):
+            print("Error: Lack literals.")
+            return -1
         for i in range(len(literal)):
             l = literal[i]
             # Check whether the data has proper type
@@ -152,11 +155,11 @@ class Database:
                     print("Error: The type of No." + str(i + 1) + " data should be integer instead of others." )
                     return -1
                 literal[i] = eval(l)
-            elif (table.coltype[i][0] == "f"):  # Float
-                if (not isinstance(eval(l), float)):
-                    print("Error: The type of No." + str(i + 1) + " data should be float instead of others." )
+            elif (table.coltype[i][0] == "d"):  # Decimal
+                if ((not isinstance(eval(l), float)) and (not isinstance(eval(l), int))):
+                    print("Error: The type of No." + str(i + 1) + " data should be decimal instead of others." )
                     return -1
-                # Check the length of float
+                # Check the length of decimal
                 m = int(table.coltype[i].split(",")[0].split("(")[1])
                 d = int(table.coltype[i].split(",")[1].split(")")[0])
                 if ("." in l):
@@ -172,35 +175,58 @@ class Database:
                         return -1
                 literal[i] = eval(l)
             elif (table.coltype[i][0] == "c"):  # Char
+                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                    print("Error: The type of No." + str(i + 1) + " data should be char instead of others." )
+                    return -1
+                literal[i] = literal[i][1: -1]
                 n = int(table.coltype[i].split("(")[1].split(")")[0])
                 if (n < len(l)):
                     print("Error: No." + str(i + 1) + " data has too many digits")
                     return -1
             elif (table.coltype[i][0] == "v"):  # Varchar
+                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                    print("Error: The type of No." + str(i + 1) + " data should be varchar instead of others." )
+                    return -1
+                literal[i] = literal[i][1: -1]
                 n = int(table.coltype[i].split("(")[1].split(")")[0])
                 if (n < len(l)):
                     print("Error: No." + str(i + 1) + " data has too many digits")
                     return -1
             elif (table.coltype[i][0] == "t"):  # Text
-                pass
+                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                    print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
+                    return -1
+                literal[i] = literal[i][1: -1]
         # Check the uniqueness of primary key
         for i in range(len(table.data)):
+            flag = 2
             for j in range(len(table.column)):
-                flag = 0
-                if ((table.pk[j] == 1) and (table.data[i][j] != literal[j])):
-                    flag = 1
+                if (table.pk[j] == 1):
+                    flag = 0
+                    if (table.data[i][j] != literal[j]):
+                        flag = 1
+                        break
             if (flag == 0):
-                print("Error: The primary key exists.")
-                return -1
+                for j in range(len(table.column)):
+                    if ((table.pk[j] == 0) and (table.data[i][j] != literal[j])):
+                        print("Error: The primary key exists.")
+                        return -1
+                    else:
+                        return 0
         table.data.append(literal)
         return 0
 
     def print(self, table_name): # name: string
         # Find corresponding Table object
+        flag = -1
         for i in range(len(self.tables)):
             if (self.tables[i].name == table_name):
                 table = self.tables[i]
+                flag = 0
                 break
+        if (flag == -1):
+            print("Error: Table doesn't exist.")
+            return -1
         pformat = ""
         # Find proper length for each column
         for i in range(len(table.column)):
@@ -212,14 +238,12 @@ class Database:
             pformat += str(max_len + 2)
             pformat += "s"
         # Print column name
-        print(pformat % list(map(str, table.column)))
+        print(pformat % tuple(map(str, table.column)))
         # Print data
         for i in range(len(table.data)):
-            print(pformat % list(map(str, table.data[i])))
-        return
+            print(pformat % tuple(map(str, table.data[i])))
+        return 0
     
-    def quit(self):
-        pass
     
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
         # condition的样例
@@ -320,5 +344,3 @@ class Database:
 
         # 多table select
         else:
-
->>>>>>> refs/remotes/origin/main
