@@ -197,8 +197,17 @@ class Database:
                     print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
                     return -1
                 literal[i] = literal[i][1: -1]
-        # Check the uniqueness of primary key
+        
         for i in range(len(table.data)):
+            # Check the uniqueness of data
+            for j in range(len(table.column)):
+                flag_ = 0
+                if (table.data[i][j] != literal[j]):
+                    flag_ = 1
+                    break
+            if (flag_ == 0):
+                return 0
+            # Check the uniqueness of primary key
             flag = 2
             for j in range(len(table.column)):
                 if (table.pk[j] == 1):
@@ -207,15 +216,11 @@ class Database:
                         flag = 1
                         break
             if (flag == 0):
-                for j in range(len(table.column)):
-                    if ((table.pk[j] == 0) and (table.data[i][j] != literal[j])):
-                        print("Error: The primary key exists.")
-                        return -1
-                    else:
-                        return 0
+                print("Error: The primary key exists.")
+                return -1
         table.data.append(literal)
         return 0
-
+    
     def print(self, table_name): # name: string
         # Find corresponding Table object
         flag = -1
