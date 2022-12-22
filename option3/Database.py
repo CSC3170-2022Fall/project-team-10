@@ -48,7 +48,6 @@ class Database:
         table.name = table_name
         self.tables.append(table)
         return 
-
     def load(self, file_name): # file_name: string
         # Get table names from file
         if (not os.path.exists(file_name + ".db")):
@@ -107,14 +106,18 @@ class Database:
         for i in range(len(table.column)):
             create_sql += table.column[i]
             create_sql += " "
-            create_sql += table.coltype[i]
-            if (table.notnull[i] != 0):
-                create_sql += " not null"
-            if (table.dflt_value[i] != None):
-                create_sql += " default "
-                create_sql += table.dflt_value[i]
-            if (table.pk[i] == 1):
-                pk.append(table.column[i])
+            if (table.coltype != []):
+                create_sql += table.coltype[i]
+            if (table.notnull != []):
+                if (table.notnull[i] != 0):
+                    create_sql += " not null"
+            if (table.dflt_value != []):
+                if (table.dflt_value[i] != None):
+                    create_sql += " default "
+                    create_sql += table.dflt_value[i]
+            if (table.pk != []):
+                if (table.pk[i] == 1):
+                    pk.append(table.column[i])
             if (i != len(table.column) - 1):
                 create_sql += ", "
         if (pk != []):
@@ -150,54 +153,54 @@ class Database:
         for i in range(len(literal)):
             l = literal[i]
             # Check whether the data has proper type
-            if (table.coltype[i][0] == "i"):  # Integer
-                if (not isinstance(eval(l), int)):
-                    print("Error: The type of No." + str(i + 1) + " data should be integer instead of others." )
-                    return -1
-                literal[i] = eval(l)
-            elif (table.coltype[i][0] == "d"):  # Decimal
-                if ((not isinstance(eval(l), float)) and (not isinstance(eval(l), int))):
-                    print("Error: The type of No." + str(i + 1) + " data should be decimal instead of others." )
-                    return -1
-                # Check the length of decimal
-                m = int(table.coltype[i].split(",")[0].split("(")[1])
-                d = int(table.coltype[i].split(",")[1].split(")")[0])
-                if ("." in l):
-                    if (d < len(l.split(".")[1])):
-                        print("Error: No." + str(i + 1) + " data has too many decimal digits")
+            if (table.coltype != []):
+                if (table.coltype[i][0] == "i"):  # Integer
+                    if (not isinstance(eval(l), int)):
+                        print("Error: The type of No." + str(i + 1) + " data should be integer instead of others." )
                         return -1
-                    if (m < len(l) - 1):
+                    literal[i] = eval(l)
+                elif (table.coltype[i][0] == "d"):  # Decimal
+                    if ((not isinstance(eval(l), float)) and (not isinstance(eval(l), int))):
+                        print("Error: The type of No." + str(i + 1) + " data should be decimal instead of others." )
+                        return -1
+                    # Check the length of decimal
+                    m = int(table.coltype[i].split(",")[0].split("(")[1])
+                    d = int(table.coltype[i].split(",")[1].split(")")[0])
+                    if ("." in l):
+                        if (d < len(l.split(".")[1])):
+                            print("Error: No." + str(i + 1) + " data has too many decimal digits")
+                            return -1
+                        if (m < len(l) - 1):
+                            print("Error: No." + str(i + 1) + " data has too many digits")
+                            return -1
+                    else:
+                        if (m < len(l)):
+                            print("Error: No." + str(i + 1) + " data has too many digits")
+                            return -1
+                    literal[i] = eval(l)
+                elif (table.coltype[i][0] == "c"):  # Char
+                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                        print("Error: The type of No." + str(i + 1) + " data should be char instead of others." )
+                        return -1
+                    literal[i] = literal[i][1: -1]
+                    n = int(table.coltype[i].split("(")[1].split(")")[0])
+                    if (n < len(l)):
                         print("Error: No." + str(i + 1) + " data has too many digits")
                         return -1
-                else:
-                    if (m < len(l)):
+                elif (table.coltype[i][0] == "v"):  # Varchar
+                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                        print("Error: The type of No." + str(i + 1) + " data should be varchar instead of others." )
+                        return -1
+                    literal[i] = literal[i][1: -1]
+                    n = int(table.coltype[i].split("(")[1].split(")")[0])
+                    if (n < len(l)):
                         print("Error: No." + str(i + 1) + " data has too many digits")
                         return -1
-                literal[i] = eval(l)
-            elif (table.coltype[i][0] == "c"):  # Char
-                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                    print("Error: The type of No." + str(i + 1) + " data should be char instead of others." )
-                    return -1
-                literal[i] = literal[i][1: -1]
-                n = int(table.coltype[i].split("(")[1].split(")")[0])
-                if (n < len(l)):
-                    print("Error: No." + str(i + 1) + " data has too many digits")
-                    return -1
-            elif (table.coltype[i][0] == "v"):  # Varchar
-                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                    print("Error: The type of No." + str(i + 1) + " data should be varchar instead of others." )
-                    return -1
-                literal[i] = literal[i][1: -1]
-                n = int(table.coltype[i].split("(")[1].split(")")[0])
-                if (n < len(l)):
-                    print("Error: No." + str(i + 1) + " data has too many digits")
-                    return -1
-            elif (table.coltype[i][0] == "t"):  # Text
-                if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                    print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
-                    return -1
-                literal[i] = literal[i][1: -1]
-        
+                elif (table.coltype[i][0] == "t"):  # Text
+                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
+                        print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
+                        return -1
+                    literal[i] = literal[i][1: -1]
         for i in range(len(table.data)):
             # Check the uniqueness of data
             for j in range(len(table.column)):
@@ -210,17 +213,18 @@ class Database:
             # Check the uniqueness of primary key
             flag = 2
             for j in range(len(table.column)):
-                if (table.pk[j] == 1):
-                    flag = 0
-                    if (table.data[i][j] != literal[j]):
-                        flag = 1
-                        break
+                if (table.pk != []):
+                    if (table.pk[j] == 1):
+                        flag = 0
+                        if (table.data[i][j] != literal[j]):
+                            flag = 1
+                            break
             if (flag == 0):
                 print("Error: The primary key exists.")
                 return -1
         table.data.append(literal)
         return 0
-    
+
     def print(self, table_name): # name: string
         # Find corresponding Table object
         flag = -1
@@ -248,7 +252,6 @@ class Database:
         for i in range(len(table.data)):
             print(pformat % tuple(map(str, table.data[i])))
         return 0
-    
     
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
         # condition的样例
