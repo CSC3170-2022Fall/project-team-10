@@ -47,7 +47,8 @@ class Database:
         table = selected
         table.name = table_name
         self.tables.append(table)
-        return 
+        return
+    
     def load(self, file_name): # file_name: string
         # Get table names from file
         if (not os.path.exists(file_name + ".db")):
