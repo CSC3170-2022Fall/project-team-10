@@ -84,6 +84,7 @@ class Database:
                     new_table.data.append(list(j))
                 self.tables.append(new_table)
         conn.close()
+        print("Loaded "+file_name+".db")
         return 0
 
     def store(self, table_name): # table_name: string
@@ -134,6 +135,7 @@ class Database:
             cursor.execute(insert_sql)
         conn.commit()
         conn.close()
+        print("Stored "+table_name+".db")
         return 0
 
     # Return 0 for normally terminates, return -1 for terminates with error
