@@ -59,30 +59,22 @@ class Database:
         cursor.execute("select name from sqlite_master where type = 'table'")
         table_name = cursor.fetchall()
         for i in range(len(table_name)):
-            # Check whether the table has been created
-            flag = 0
-            for j in range(len(self.tables)):
-                if (self.tables[j].name == table_name[i][0]):
-                    print("Error: Table " + table_name[i][0] + " has been created.")
-                    flag = 1
-                    break
             # Load file
-            if (flag == 0):
-                new_table = Table()
-                new_table.name = table_name[i][0]
-                cursor.execute("PRAGMA table_info('%s')" %table_name[i][0])
-                column_attr = cursor.fetchall()
-                for j in range(len(column_attr)):
-                    new_table.column.append(column_attr[j][1])
-                    new_table.coltype.append(column_attr[j][2].lower())
-                    new_table.notnull.append(column_attr[j][3])
-                    new_table.dflt_value.append(column_attr[j][4])
-                    new_table.pk.append(column_attr[j][5])
-                cursor.execute("select * from %s" %table_name[i][0])
-                datas = cursor.fetchall()
-                for j in datas:
-                    new_table.data.append(list(j))
-                self.tables.append(new_table)
+            new_table = Table()
+            new_table.name = table_name[i][0]
+            cursor.execute("PRAGMA table_info('%s')" %table_name[i][0])
+            column_attr = cursor.fetchall()
+            for j in range(len(column_attr)):
+                new_table.column.append(column_attr[j][1])
+                new_table.coltype.append(column_attr[j][2].lower())
+                new_table.notnull.append(column_attr[j][3])
+                new_table.dflt_value.append(column_attr[j][4])
+                new_table.pk.append(column_attr[j][5])
+            cursor.execute("select * from %s" %table_name[i][0])
+            datas = cursor.fetchall()
+            for j in datas:
+                new_table.data.append(list(j))
+            self.tables.append(new_table)
         conn.close()
         print("Loaded "+file_name+".db")
         return 0
