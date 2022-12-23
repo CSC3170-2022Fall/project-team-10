@@ -21,7 +21,7 @@ class Database:
         elif ((command.type == "quit") or (command.type == "exit")):
             self.quit()
         elif (command.type == "select"):
-            pass
+            self.select(self.column, self.name, self.condition)
         return
 
     def create_table(self):
