@@ -247,6 +247,19 @@ class Database:
             print(pformat % tuple(map(str, table.data[i])))
         return 0
     
+    def __satis(self,value_test,value_cond,relation):
+        if relation == '==' and value_test == value_cond:
+            return True
+        if relation == '>=' and value_test >= value_cond:
+            return True
+        if relation == '<=' and value_test <= value_cond:
+            return True
+        if relation == '<' and value_test < value_cond:
+            return True
+        if relation == '>' and value_test > value_cond:
+            return True
+        return False
+    
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
         # condition的样例
         #e.g if the condition is student_name == 'Tom'
@@ -312,59 +325,96 @@ class Database:
 
 
         # 根据condition选数据
-        if len(condition) != 0:
+        if len(condition) == 1:
+            flag = 0
+            col_ind = 0
+            cond = condition[0]
             for j in range(len(ori_table.column)):
-                if ori_table.column[j] == condition.left:
-                    if ori_table.coltype != condition.right_type:
-                        print("Error: The left and right data types of condi do not match")
+                if ori_table.column[j] == cond.left:
+                    flag = 1
+                    col_ind = j
+                    if ori_table.coltype[j] != cond.right_type:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
                         return
-                    for id in range(len(ori_table.data)):
-                        data = ori_table.data[id]
-                        if condition.relation == "==" and str(data[j]) == condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue
-                        
-                        if condition.relation == "<=" and str(data[j]) <= condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue
+            if flag == 0: 
+                print("The condition's column cannot be found in table.")
+                return 
+            ori_data = ori_table.data
+            for id in range(len(ori_data)):
+                test_data = ori_data[id]
+                cond_value = cond.right
+                test_value = str(test_data[col_ind])
+                test_relation = cond.relation
+                if self.__satis(test_value,cond_value,test_relation):
+                    new_data = []
+                    for idx in ind:
+                        new_data.append(ori_data[idx])
+                    new_table.data.append(new_data)
 
-                        if condition.relation == ">=" and str(data[j]) >= condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue                               
 
-                        if condition.relation == "<" and str(data[j]) < condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue           
 
-                        if condition.relation == ">" and str(data[j]) > condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue            
+        elif len(condition) == 2:
+            flag_1 = 0
+            flag_2 = 0
+            col_ind_1 = 0
+            col_ind_2 = 0
+            cond_1 = condition[0]
+            cond_2 = condition[1]
+            for j in range(len(ori_table.column)):
+                if ori_table.column[j] == cond_1.left:
+                    flag += 1
+                    col_ind_1 = j
+                    if ori_table.coltype[j] != cond.right_type:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_1.left)
+                        return
+            for j in range(len(ori_table.column)):
+                if ori_table.column[j] == cond_2.left:
+                    flag += 1
+                    col_ind_2 = j
+                    if ori_table.coltype[j] != cond.right_type:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_2.left)
+                        return
 
-                        if condition.relation == "!=" and str(data[j]) != condition.right:
-                            new_data = []
-                            for idx in ind:
-                                new_data.append(data[idx])
-                            new_table.data.append(new_data)
-                            continue
+            if flag_1 == 0 or flag_2 == 0: 
+                print("The condition's column cannot be found in table.")
+                return 
+
+            ori_data = ori_table.data
+            for id in range(len(ori_data)):
+                test_data = ori_data[id]
+                cond_value_1 = cond_1.right
+                test_value_1 = test_data[col_ind_1]
+                if cond_1.right_type == 'int':
+                    cond_value_1 = int(cond_value_1)
+                elif  cond_1.right_type == 'float':
+                    cond_value_1 = float(cond_value_1)
+                elif cond_1.right_type == 'string':
+                    test_value_1 == str(test_value_1)
+                
+                cond_value_2 = cond_2.right
+                test_value_2 = test_data[col_ind_2]
+                if cond_2.right_type == 'int':
+                    cond_value_2 = int(cond_value_2)
+                elif  cond_2.right_type == 'float':
+                    cond_value_2 = float(cond_value_2)
+                elif cond_1.right_type == 'string':
+                    test_value_2 == str(test_value_2)
+
+                test_relation_1 = cond_1.relation
+                test_relation_2 = cond_2.relation
+                if self.__satis(test_value_1,cond_value_1,test_relation_1) and self.__satis(test_value_2,cond_value_2,test_relation_2):
+                    new_data = []
+                    for idx in ind:
+                        new_data.append(ori_data[idx])
+                    new_table.data.append(new_data)
+
+        elif len(condition) >= 3:
+            print("# of conditions is more than 2.")
+            return 
         else:
             new_data = []
             for idx in ind:
-                new_data.append(data[idx])
+                new_data.append(ori_table.data[idx])
             new_table.data.append(new_data)
             
         # show the data
@@ -377,79 +427,4 @@ class Database:
                     print('\n')
         
         return new_table
-
-
-
-                                
-
-        # 多table select
-        # else:
-        #     ori_table = []
-        #     if len(table) == 2:
-        #         for i in range(len(self.tables)):
-        #             if self.tables[i].name == table[0]:
-        #                 for j in range(len(self.tables)):
-        #                     if self.tables[j].name == table[1]:
-        #                         ori_table = table[0].join(table[1])
-        #                         break
-        #         # 更新new_table的columns
-        #         ind = []
-        #         for k in range(len(column)):
-        #             for j in range(len(ori_table.column)):
-        #                 if column[k] == ori_table.column[j]:
-        #                     new_table.column.append(ori_table.column[j])
-        #                     new_table.coltype.append(ori_table.coltype[j])
-        #                     new_table.notnull.append(ori_table.notnull[j])
-        #                     new_table.dflt_value.append(ori_table.dflt_value[j])
-        #                     new_table.pk.append(ori_table.pk[j])
-        #         # 根据condition选数据
-        #         if len(condition) != 0:
-        #             for j in range(len(ori_table.column)):
-        #                 if ori_table.column[j] == condition.left:
-        #                     if ori_table.coltype != condition.right_type:
-        #                         print("Error: The left and right data types of condi do not match")
-        #                         return
-        #                     for id in range(len(ori_table.data)):
-        #                         data = ori_table.data[id]
-        #                         if condition.relation == "==" and str(data[j]) == condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue
-                                
-        #                         if condition.relation == "<=" and str(data[j]) <= condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue
-
-        #                         if condition.relation == ">=" and str(data[j]) >= condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue                               
-
-        #                         if condition.relation == "<" and str(data[j]) < condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue           
-
-        #                         if condition.relation == ">" and str(data[j]) > condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue            
-
-        #                         if condition.relation == "!=" and str(data[j]) != condition.right:
-        #                             new_data = []
-        #                             for idx in ind:
-        #                                 new_data.append(data[idx])
-        #                             continue
-        #                     return new_table
-        #     else:
-        #         new_data = []
-        #         for idx in ind:
-        #             new_data.append(data[idx])
-        #         return new_table
 
