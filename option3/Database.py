@@ -23,7 +23,7 @@ class Database:
         elif ((command.type == "quit") or (command.type == "exit")):
             return -1
         elif (command.type == "select"):
-            pass
+            select(self.column,self.name,self.condition)
         return 0
 
     def create_table(self, table_name, column_name):
