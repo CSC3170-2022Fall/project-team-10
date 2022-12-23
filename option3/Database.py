@@ -23,7 +23,7 @@ class Database:
         elif ((command.type == "quit") or (command.type == "exit")):
             return -1
         elif (command.type == "select"):
-            select(self.column,self.name,self.condition)
+            self.select(self.column,self.name,self.condition)
         return 0
 
     def create_table(self, table_name, column_name):
@@ -298,7 +298,7 @@ class Database:
             else:
                 print('Error: More than 2 tables')
             return
-            # 更新new_table的columns
+        # 更新new_table的columns
         ind = []
         for k in range(len(column)):
             for j in range(len(ori_table.column)):
@@ -308,9 +308,10 @@ class Database:
                     new_table.notnull.append(ori_table.notnull[j])
                     new_table.dflt_value.append(ori_table.dflt_value[j])
                     new_table.pk.append(ori_table.pk[j])
+                    ind.append(j)
 
 
-            # 根据condition选数据
+        # 根据condition选数据
         if len(condition) != 0:
             for j in range(len(ori_table.column)):
                 if ori_table.column[j] == condition.left:
@@ -323,43 +324,60 @@ class Database:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue
                         
                         if condition.relation == "<=" and str(data[j]) <= condition.right:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue
 
                         if condition.relation == ">=" and str(data[j]) >= condition.right:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue                               
 
                         if condition.relation == "<" and str(data[j]) < condition.right:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue           
 
                         if condition.relation == ">" and str(data[j]) > condition.right:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue            
 
                         if condition.relation == "!=" and str(data[j]) != condition.right:
                             new_data = []
                             for idx in ind:
                                 new_data.append(data[idx])
+                            new_table.data.append(new_data)
                             continue
-                        return new_table
         else:
             new_data = []
             for idx in ind:
                 new_data.append(data[idx])
-            return new_table
+            new_table.data.append(new_data)
+            
+        # show the data
+        print('Select Results:')
+        for i in range(len(new_table.data)):
+            show_data = new_table.data[i] 
+            for j in range(len(show_data)):
+                print(show_data[j],end='\t')
+                if j == len(show_data)-1:
+                    print('\n')
+        
+        return new_table
+
 
 
                                 
