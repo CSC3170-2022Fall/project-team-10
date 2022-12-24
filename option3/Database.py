@@ -285,26 +285,40 @@ class Database:
         4. ind[] 原表中所需的column的index
         '''
         # 单table select
-        if len(table) == 1:
+        ori_table = Table()
+        # 单表select 构建单表的
+        if len(table) == 1:  
             new_table = Table()
+            print('flag1')
             for i in range(len(self.tables)):
                 if self.tables[i].name == table[0]:
                     ori_table = self.tables[i]
                     break
         elif len(table) == 2:
+            flag_tb1 = 0
+            flag_tb2 = 0
+            print('flag2')
             for i in range(len(self.tables)):
                 if self.tables[i].name == table[0]:
                     table0 = self.table[i]
+                    flag_tb1 = 1
                     break
-                print("This database doesn\'t have such table named:%s"%table[0])
-                return
             for j in range(len(self.tables)):
                 if self.tables[j].name == table[1]:
                     table1 = self.table[j]
                     ori_table = table0.join(table1)
+                    flag_tb2 = 1
                     break
+            if flag_tb1 == 0 and flag_tb2 == 0:
+                print("This database doesn\'t have such two table.")
+                return
+            if flag_tb1 == 0:
+                print("This database doesn\'t have such table named:%s"%table[0])
+                return
+            if flag_tb1 == 0:
                 print("This database doesn\'t have such table named:%s"%table[1])
                 return
+
         else:
             if len(table) == 0:
                 print("This command needs at least 1 table")
@@ -313,19 +327,31 @@ class Database:
             return
         # 更新new_table的columns
         ind = []
+        print('flag3')
         for k in range(len(column)):
             for j in range(len(ori_table.column)):
                 if column[k] == ori_table.column[j]:
                     new_table.column.append(ori_table.column[j])
-                    new_table.coltype.append(ori_table.coltype[j])
-                    new_table.notnull.append(ori_table.notnull[j])
-                    new_table.dflt_value.append(ori_table.dflt_value[j])
-                    new_table.pk.append(ori_table.pk[j])
+                    try:
+                        new_table.coltype.append(ori_table.coltype[j])
+                    except:pass
+                    try:
+                        new_table.notnull.append(ori_table.notnull[j])
+                    except:pass
+                    try:
+                        new_table.dflt_value.append(ori_table.dflt_value[j])
+                        # print('dflt_value',ori_table.dflt_value[j])
+                    except:pass
+                    try:
+                        new_table.pk.append(ori_table.pk[j])
+                        # print('pk',ori_table.pk[j])
+                    except:pass
                     ind.append(j)
 
 
         # 根据condition选数据
         if len(condition) == 1:
+            print('flag4')
             flag = 0
             col_ind = 0
             cond = condition[0]
@@ -333,49 +359,95 @@ class Database:
                 if ori_table.column[j] == cond.left:
                     flag = 1
                     col_ind = j
-                    if ori_table.coltype[j] != cond.right_type:
+                    if cond.right_type == 'string' and ori_table.data[0][j] != str:
                         print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
-                        return
+                        return   
+                    elif cond.right_type == 'int' and ori_table.data[0][j] != int:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
+                        return  
+                    elif cond.right_type == 'float' and ori_table.data[0][j] != float:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
+                        return         
             if flag == 0: 
+                print('flag5')
+                ######################################################## 
+                for k in range(len(ori_table.column)):
+                    print(11111,end='\t')
+                    print(ori_table.column[k],end='\t')
+                ########################################################                
                 print("The condition's column cannot be found in table.")
                 return 
             ori_data = ori_table.data
+            print('flag6')
             for id in range(len(ori_data)):
                 test_data = ori_data[id]
                 cond_value = cond.right
-                test_value = str(test_data[col_ind])
+                test_value = test_data[col_ind]
+                if cond.right_type == 'int':
+                    cond_value = int(cond_value)
+                elif  cond.right_type == 'float':
+                    cond_value = float(cond_value)
+                elif cond.right_type == 'string':
+                    test_value == str(test_value)
+
                 test_relation = cond.relation
                 if self.__satis(test_value,cond_value,test_relation):
                     new_data = []
                     for idx in ind:
-                        new_data.append(ori_data[idx])
+                        new_data.append(test_data[idx])
                     new_table.data.append(new_data)
 
 
 
         elif len(condition) == 2:
+            print('flag7')
             flag_1 = 0
             flag_2 = 0
             col_ind_1 = 0
             col_ind_2 = 0
             cond_1 = condition[0]
             cond_2 = condition[1]
+            print('flag8')
             for j in range(len(ori_table.column)):
                 if ori_table.column[j] == cond_1.left:
                     flag += 1
                     col_ind_1 = j
-                    if ori_table.coltype[j] != cond.right_type:
+                    # if ori_table.coltype[j] != cond.right_type:
+                    #     print("Error: The left and right data types of condition \"%s\" do not match"%cond_1.left)
+                    #     return
+                    if cond_1.right_type == 'string' and ori_table.data[0][j] != str:
                         print("Error: The left and right data types of condition \"%s\" do not match"%cond_1.left)
-                        return
+                        return   
+                    elif cond_1.right_type == 'int' and ori_table.data[0][j] != int:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_1.left)
+                        return  
+                    elif cond_1.right_type == 'float' and ori_table.data[0][j] != float:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_1.left)
+                        return                        
+
             for j in range(len(ori_table.column)):
                 if ori_table.column[j] == cond_2.left:
                     flag += 1
                     col_ind_2 = j
-                    if ori_table.coltype[j] != cond.right_type:
+                    # if ori_table.coltype[j] != cond.right_type:
+                    #     print("Error: The left and right data types of condition \"%s\" do not match"%cond_2.left)
+                    #     return
+                    if cond_2.right_type == 'string' and ori_table.data[0][j] != str:
                         print("Error: The left and right data types of condition \"%s\" do not match"%cond_2.left)
-                        return
+                        return   
+                    elif cond_2.right_type == 'int' and ori_table.data[0][j] != int:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_2.left)
+                        return  
+                    elif cond_2.right_type == 'float' and ori_table.data[0][j] != float:
+                        print("Error: The left and right data types of condition \"%s\" do not match"%cond_2.left)
+                        return         
 
-            if flag_1 == 0 or flag_2 == 0: 
+            if flag_1 == 0 or flag_2 == 0:
+                ######################################################## 
+                for k in range(len(ori_table.column)):
+                    print(11111,end='\t')
+                    print(ori_table.column[k],end='\t')
+                ########################################################
                 print("The condition's column cannot be found in table.")
                 return 
 
@@ -405,26 +477,29 @@ class Database:
                 if self.__satis(test_value_1,cond_value_1,test_relation_1) and self.__satis(test_value_2,cond_value_2,test_relation_2):
                     new_data = []
                     for idx in ind:
-                        new_data.append(ori_data[idx])
+                        new_data.append(test_data[idx])
                     new_table.data.append(new_data)
 
         elif len(condition) >= 3:
             print("# of conditions is more than 2.")
             return 
         else:
+            print("flag10")
             new_data = []
-            for idx in ind:
-                new_data.append(ori_table.data[idx])
-            new_table.data.append(new_data)
+            for k in range(len(ori_table.data)):
+                for idx in ind:
+                    new_data.append(ori_table.data[k][idx])
+                new_table.data.append(new_data)
             
         # show the data
         print('Select Results:')
+        for k in range(len(new_table.column)):
+            print(new_table.column[k],end='\t')
+        print()
         for i in range(len(new_table.data)):
             show_data = new_table.data[i] 
-            for j in range(len(show_data)):
+            for j in range(len(new_table.column)):
                 print(show_data[j],end='\t')
-                if j == len(show_data)-1:
-                    print('\n')
+            print()
         
         return new_table
-
