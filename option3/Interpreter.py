@@ -152,7 +152,7 @@ def print_interpreter(commandl):
 
 def deal_condition(cond):
     thiscondition = Condition()
-    optl = ['>', '>=', '==', '<', '<=', '!=']
+    optl = ['>', '>=', '=', '<', '<=', '!=']
     for opt in optl:
         if cond.find(opt) != -1:
             if opt == '>' and cond.find('>=') != -1:
@@ -166,23 +166,25 @@ def deal_condition(cond):
             left = condl[0]
             left = left.lstrip()
             left = left.rstrip()
-            thiscondition.left = left
-            if left[0] =="'" and left[-1] =="'":
+            if (left[0] =="'" and left[-1] =="'") or (left[0] =="\"" and left[-1] =="\""):
                 thiscondition.left_type = 'string'
+                left = left[1:len(left)-1]
             elif left.replace('.', '').isdigit():
                 thiscondition.left_type = 'number'
             else:
                 thiscondition.left_type = 'column'
+            thiscondition.left = left
             right = condl[1]
             right = right.lstrip()
             right = right.rstrip()
-            thiscondition.right = right
-            if right[0] =="'" and right[-1] =="'":
+            if (right[0] =="'" and right[-1] =="'") or (right[0] =="\"" and right[-1] =="\""):
                 thiscondition.right_type = 'string'
+                right = right[1:len(right)-1]
             elif right.replace('.', '').isdigit():
                 thiscondition.right_type = 'number'
             else:
                 thiscondition.right_type = 'column'
+            thiscondition.right = right
             return thiscondition
     raise Exception('SQL syntax error: no such comparing operation')
             
@@ -295,45 +297,52 @@ def create_table_as_interpreter(commandl, commands):
 
 
 def interpreter(instr):
-    try:
-        commandl, commands = inputSplit(instr)
-        t = typeDectect(commandl)
-        if t == 'create table':
-            return create_table_interpreter(commandl)
-        elif t == 'create table as':
-            return create_table_as_interpreter(commandl, commands)
-        elif t == 'load':
-            return load_interpreter(commandl)
-        elif t == 'store':
-            return store_interpreter(commandl)
-        elif t == 'insert into':
-            return insert_into_interpreter(commandl, commands)
-        elif t == 'print':
-            return print_interpreter(commandl)
-        elif t == 'select':
-            return select_interpreter(commandl, commands)
-        elif t == 'quit' or t == 'exit':
-            com = Command()
-            com.type = t
-            return com
-        else:
-            raise Exception('SQL syntax error: no such SQL command')
-    except:
-        raise Exception('error: SQL syntax error')
+    commandl, commands = inputSplit(instr)
+    t = typeDectect(commandl)
+    if t == 'create table':
+        return create_table_interpreter(commandl)
+    elif t == 'create table as':
+        return create_table_as_interpreter(commandl, commands)
+    elif t == 'load':
+        return load_interpreter(commandl)
+    elif t == 'store':
+        return store_interpreter(commandl)
+    elif t == 'insert into':
+        return insert_into_interpreter(commandl, commands)
+    elif t == 'print':
+        return print_interpreter(commandl)
+    elif t == 'select':
+        # # print(select_interpreter(commandl, commands).type)
+        # print(select_interpreter(commandl, commands).name)
+        # print(select_interpreter(commandl, commands).rows)
+        # print(select_interpreter(commandl, commands).column)
+        # for i in range(len(select_interpreter(commandl,commands).condition)):
+        #     print(select_interpreter(commandl, commands).condition[i].left,end='\t')
+        #     print(select_interpreter(commandl, commands).condition[i].left_type)
+        #     print(select_interpreter(commandl, commands).condition[i].relation)
+        #     print(select_interpreter(commandl, commands).condition[i].right,end='\t')
+        #     print(select_interpreter(commandl, commands).condition[i].right_type)
+        return select_interpreter(commandl, commands)
+    elif t == 'quit' or t == 'exit':
+        com = Command()
+        com.type = t
+        return com
+    else:
+        raise Exception('SQL syntax error: no such SQL command')
         
            
-        
+# instr = input()
+# cmd = interpreter(instr)       
 # instr = input('>')
 # acommand = interpreter(instr)
 # print(acommand.type)
 # print(acommand.name)
 # print(acommand.column)
-# print(acommand.rows)
 # for thiscondition in acommand.condition:
-#     print(thiscondition.left)
-#     print(thiscondition.left_type)
-#     print(thiscondition.relation)
-#     print(thiscondition.right)
-#     print(thiscondition.right_type)  
+#    print(thiscondition.left)
+#    print(thiscondition.left_type)
+#    print(thiscondition.relation)
+#    print(thiscondition.right)
+#    print(thiscondition.right_type)  
 
 
