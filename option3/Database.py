@@ -195,6 +195,11 @@ class Database:
                         print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
                         return -1
                     literal[i] = literal[i][1: -1]
+            else:
+                try:
+                    literal[i] = eval(literal[i])
+                except:
+                    pass
         for i in range(len(table.data)):
             # Check the uniqueness of data
             for j in range(len(table.column)):
