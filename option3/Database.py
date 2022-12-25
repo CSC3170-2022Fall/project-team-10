@@ -47,37 +47,38 @@ class Database:
         table.name = table_name
         self.tables.append(table)
         return
-    
-    def load(self, file_name): # file_name: string
+   
+    # Return 0 for normally terminates, return -1 for terminates with error
+    def load(self, table_name): # file_name: string
         # Get table names from file
-        if (not os.path.exists(file_name + ".db")):
+        if (not os.path.exists(table_name + ".db")):
             print("Error: File doesn't exist.")
             return -1
-        conn = sqlite3.connect(file_name + ".db")
-        cursor = conn.cursor()
-        cursor.execute("select name from sqlite_master where type = 'table'")
-        table_name = cursor.fetchall()
-        for i in range(len(table_name)):
-            # Load file
-            new_table = Table()
-            new_table.name = table_name[i][0]
-            cursor.execute("PRAGMA table_info('%s')" %table_name[i][0])
-            column_attr = cursor.fetchall()
-            for j in range(len(column_attr)):
-                new_table.column.append(column_attr[j][1])
-                new_table.coltype.append(column_attr[j][2].lower())
-                new_table.notnull.append(column_attr[j][3])
-                new_table.dflt_value.append(column_attr[j][4])
-                new_table.pk.append(column_attr[j][5])
-            cursor.execute("select * from %s" %table_name[i][0])
-            datas = cursor.fetchall()
-            for j in datas:
-                new_table.data.append(list(j))
-            self.tables.append(new_table)
-        conn.close()
-        print("Loaded "+file_name+".db")
+        new_table = Table()
+        new_table.name = table_name
+        with open(table_name + ".db", "r") as file:
+            col_row = True
+            for line in file:
+                if (line[-1] == "\n"):
+                    line = line[:-1]
+                line_list = line.split(",")
+                # Read column name
+                if (col_row == True):
+                    new_table.column = line_list
+                    col_row = False
+                # Read data
+                else:
+                    for i in range(len(line_list)):
+                        try:
+                            line_list[i] = eval(line_list[i])
+                        except:
+                            pass
+                    new_table.data.append(line_list)
+        self.tables.append(new_table)
+        print("Loaded " + table_name + ".db")
         return 0
 
+    # Return 0 for normally terminates, return -1 for terminates with error
     def store(self, table_name): # table_name: string
         # Find corresponding Table object
         flag = -1
@@ -89,44 +90,22 @@ class Database:
         if (flag == -1):
             print("Error: Table doesn't exist.")
             return -1
-        conn = sqlite3.connect(table_name + ".db")
-        cursor = conn.cursor()
-        # Drop old table if it exists
-        cursor.execute("drop table if exists %s" %table_name)
-        # Create new table
-        pk = []  # Store primary key
-        create_sql = "create table %s (" %table_name
-        for i in range(len(table.column)):
-            create_sql += table.column[i]
-            create_sql += " "
-            if (table.coltype != []):
-                create_sql += table.coltype[i]
-            if (table.notnull != []):
-                if (table.notnull[i] != 0):
-                    create_sql += " not null"
-            if (table.dflt_value != []):
-                if (table.dflt_value[i] != None):
-                    create_sql += " default "
-                    create_sql += table.dflt_value[i]
-            if (table.pk != []):
-                if (table.pk[i] == 1):
-                    pk.append(table.column[i])
-            if (i != len(table.column) - 1):
-                create_sql += ", "
-        if (pk != []):
-            create_sql += ", "
-            create_sql += "primary key "
-            create_sql += str(tuple(pk))
-        create_sql += ")"
-        cursor.execute(create_sql)
-        # Insert data to the table
-        for i in range(len(table.data)):
-            insert_sql = "insert into %s values " %table_name
-            insert_sql += str(tuple(table.data[i]))
-            cursor.execute(insert_sql)
-        conn.commit()
-        conn.close()
-        print("Stored "+table_name+".db")
+        with open(table_name + ".db", "w") as file:
+            # Write column name
+            for i in range(len(table.column)):
+                if (i != 0):
+                    file.write(",")
+                file.write(table.column[i])
+            file.write("\n")
+            # Write data
+            for i in range(len(table.data)):
+                for j in range(len(table.data[i])):
+                    if (j != 0):
+                        file.write(",")
+                    file.write(str(table.data[i][j]))
+                if (i != len(table.data) - 1):
+                    file.write("\n")
+        print("Stored " + table_name + ".db")
         return 0
 
     # Return 0 for normally terminates, return -1 for terminates with error
@@ -141,65 +120,20 @@ class Database:
         if (flag == -1):
             print("Error: Table doesn't exist.")
             return -1
-        if (len(literal) != len(table.column)):
+        if (len(literal) < len(table.column)):
             print("Error: Lack literals.")
             return -1
+        elif (len(literal) > len(table.column)):
+            print("Error: Too many literals.")
+            return -1
         for i in range(len(literal)):
-            l = literal[i]
-            # Check whether the data has proper type
-            if (table.coltype != []):
-                if (table.coltype[i][0] == "i"):  # Integer
-                    if (not isinstance(eval(l), int)):
-                        print("Error: The type of No." + str(i + 1) + " data should be integer instead of others." )
-                        return -1
-                    literal[i] = eval(l)
-                elif (table.coltype[i][0] == "d"):  # Decimal
-                    if ((not isinstance(eval(l), float)) and (not isinstance(eval(l), int))):
-                        print("Error: The type of No." + str(i + 1) + " data should be decimal instead of others." )
-                        return -1
-                    # Check the length of decimal
-                    m = int(table.coltype[i].split(",")[0].split("(")[1])
-                    d = int(table.coltype[i].split(",")[1].split(")")[0])
-                    if ("." in l):
-                        if (d < len(l.split(".")[1])):
-                            print("Error: No." + str(i + 1) + " data has too many decimal digits")
-                            return -1
-                        if (m < len(l) - 1):
-                            print("Error: No." + str(i + 1) + " data has too many digits")
-                            return -1
-                    else:
-                        if (m < len(l)):
-                            print("Error: No." + str(i + 1) + " data has too many digits")
-                            return -1
-                    literal[i] = eval(l)
-                elif (table.coltype[i][0] == "c"):  # Char
-                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                        print("Error: The type of No." + str(i + 1) + " data should be char instead of others." )
-                        return -1
-                    literal[i] = literal[i][1: -1]
-                    n = int(table.coltype[i].split("(")[1].split(")")[0])
-                    if (n < len(l)):
-                        print("Error: No." + str(i + 1) + " data has too many digits")
-                        return -1
-                elif (table.coltype[i][0] == "v"):  # Varchar
-                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                        print("Error: The type of No." + str(i + 1) + " data should be varchar instead of others." )
-                        return -1
-                    literal[i] = literal[i][1: -1]
-                    n = int(table.coltype[i].split("(")[1].split(")")[0])
-                    if (n < len(l)):
-                        print("Error: No." + str(i + 1) + " data has too many digits")
-                        return -1
-                elif (table.coltype[i][0] == "t"):  # Text
-                    if ((literal[i][0] != '"') or (literal[i][-1] != '"')):
-                        print("Error: The type of No." + str(i + 1) + " data should be text instead of others." )
-                        return -1
-                    literal[i] = literal[i][1: -1]
-            else:
-                try:
-                    literal[i] = eval(literal[i])
-                except:
-                    pass
+            try:
+                literal[i] = eval(literal[i])
+            except:
+                if ((literal[i][0] == "\"") or (literal[i][0] == "\'")):
+                    literal[i] = literal[i][1:]
+                if ((literal[i][-1] == "\"") or (literal[i][0] == "\'")):
+                    literal[i] = literal[i][:-1]
         for i in range(len(table.data)):
             # Check the uniqueness of data
             for j in range(len(table.column)):
@@ -209,18 +143,6 @@ class Database:
                     break
             if (flag_ == 0):
                 return 0
-            # Check the uniqueness of primary key
-            flag = 2
-            for j in range(len(table.column)):
-                if (table.pk != []):
-                    if (table.pk[j] == 1):
-                        flag = 0
-                        if (table.data[i][j] != literal[j]):
-                            flag = 1
-                            break
-            if (flag == 0):
-                print("Error: The primary key exists.")
-                return -1
         table.data.append(literal)
         return 0
 
