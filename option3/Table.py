@@ -11,18 +11,9 @@ class Table:
         flag_2 = []
         new_table = Table()
         for i in range(len(table_1.column)):
-            new_table.column.append(table_1.column[i])
-            new_table.coltype.append(table_1.coltype[i])
-            new_table.notnull.append(table_1.notnull[i])
-            new_table.dflt_value.append(table_1.dflt_value[i])
-            new_table.pk.append(table_1.pk[i])            
+            new_table.column.append(table_1.column[i])         
         for i in range(len(table_2.column)):
-            new_table.column.append(table_2.column[i])
-            new_table.coltype.append(table_2.coltype[i])
-            new_table.notnull.append(table_2.notnull[i])
-            new_table.dflt_value.append(table_2.dflt_value[i])
-            new_table.pk.append(table_2.pk[i])            
-
+            new_table.column.append(table_2.column[i])            
 
 
         for i in range(len(table_1.column)):
