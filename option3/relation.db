@@ -1,0 +1,9 @@
+Name,Age,MotherName,MotherAge,FatherName,FatherAge,Bestfriend,FriendAge
+Tom,3,Mary,40,Kerry,38,Jerry,5
+Alice,15,Tina,45,John,50,Helen,15
+Wendy,20,Ling,38,Yong,45,Jessie,20
+Peter,15,Tina,45,John,50,Alice,15
+Helen,15,Sara,39,Jim,50,Alice,15
+Tina,45,Lora,70,Willian,72,Peter,65
+Jerry,5,Mary,30,Kerry,38,Tom,3
+Jessie,20,Christina,40,Ming,45,Wendy,20
