@@ -187,29 +187,6 @@ class Database:
         return False
     
     def select(self, column, table, condition): # column: a list names, table: a list of table names, condition: a list of class condition
-        # condition的样例
-        #e.g if the condition is student_name == 'Tom'
-        # left = "student_name"
-        # left_type = "column" 
-        # relation = "==" 
-        # right = "Tom"
-        # right_type = "string"
-
-        # table 的属性：
-        # self.name = ""
-        # self.column = [] # a list of column names
-        # self.data = [] # a list of string rows
-        # self.coltype = [] # type of each column
-        # self.notnull = [] # notnull: 1, default: 0
-        # self.dflt_value = [] # default value
-        # self.pk = [] # primary key: 1, default: 0
-        
-        ''' 
-        1. new_table 根据column和condition连接的新表
-        2. ori_table 数据库中的原表
-        3. result_table 返回的结果无名表
-        4. ind[] 原表中所需的column的index
-        '''
         # 单table select
         ori_table = Table()                     # ori_table 是进入condition时的原数据
         new_table = Table()                     # new_table 是输出的结果table
@@ -233,7 +210,10 @@ class Database:
             for j in range(len(self.tables)):
                 if self.tables[j].name == table[1]:
                     table1 = self.tables[j]
+                    # print('students的type:',type(table0))
+                    # print('students.data的type:',type(table0.data))
                     ori_table = table0.join(table1)
+                    # print('finish natural join')
                     flag_tb2 = 1
                     break
             if flag_tb1 == 0 and flag_tb2 == 0:
@@ -261,25 +241,9 @@ class Database:
             for j in range(len(ori_table.column)):
                 if column[k] == ori_table.column[j]:
                     new_table.column.append(ori_table.column[j])
-
-                    try:
-                        new_table.coltype.append(ori_table.coltype[j])
-                    except:pass
-
-                    try:
-                        new_table.notnull.append(ori_table.notnull[j])
-                    except:pass
-
-                    try:
-                        new_table.dflt_value.append(ori_table.dflt_value[j])
-                    except:pass
-
-                    try:
-                        new_table.pk.append(ori_table.pk[j])
-                    except:pass
-
                     ind.append(j)
-
+        # print('初始化新表column长度',len(new_table.column))
+        # print('finish new table')
 
         # 根据condition选数据
         # 单条件
@@ -294,19 +258,21 @@ class Database:
                     col_ind = j
                     # 判断condition中的数据类型是否符合table中，若不符合则报错
                     if cond.right_type == 'string' and type(ori_table.data[0][j]) != str:
-                        print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
+                        # print('string')
+                        # print(type(ori_table.data[0][j]))
+                        print("Error: The left and right data types of condition \"%s\" do not match. "%cond.left)
                         return
                     elif cond.right_type ==  'number':
                         if cond.right.find('.') != -1:
-                            print(cond.right)
+                            # print(cond.right)
                             if type(ori_table.data[0][j]) != float:
-                                print('float')
+                                # print('float')
                                 print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
                                 return   
                         else: 
                             if type(ori_table.data[0][j]) != int:
-                                print(type(ori_table.data[0][j]))
-                                print('int')
+                                # print(type(ori_table.data[0][j]))
+                                # print('int')
                                 print("Error: The left and right data types of condition \"%s\" do not match"%cond.left)
                                 return         
             if flag_condi == 0:              
@@ -329,6 +295,7 @@ class Database:
                 
                     test_relation = cond.relation
                     if self.__satis(test_value,cond_value,test_relation): 
+                        # print('enter')
                         new_data = []
                         for idx in ind:
                             new_data.append(test_data[idx])
@@ -509,7 +476,7 @@ class Database:
                         new_table.data.append(new_data)     
                            
         elif len(condition) >= 3:
-            print("# of conditions is more than 2.")
+            print("Error: # of conditions is more than 2.")
             return 
         else:                       # 无condition情况
             for k in range(len(ori_table.data)):
@@ -521,16 +488,20 @@ class Database:
             
         # show the data
         print('Select Results:')
+        # print('新表column长度: ',len(new_table.column))
         # print('Original data',ori_table.data[0][5],type(ori_table.data[0][5]))
-        # for k in range(len(new_table.column)):
-        #     print(new_table.column[k],end='\t')
-        # print()
+        for k in range(len(new_table.column)):
+            print(new_table.column[k],end='\t')
+        print()
         if len(new_table.data) == 0:
             print("The result is NONE.")
         else:
+            # print('新表数据列长度: ',len(new_table.data))
             for i in range(len(new_table.data)):
                 show_data = new_table.data[i] 
                 for j in range(len(new_table.column)):
                     print(show_data[j],end='\t')
                 print()
+        print()
         return new_table
+
