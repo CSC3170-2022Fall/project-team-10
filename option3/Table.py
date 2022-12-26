@@ -26,7 +26,7 @@ class Table:
             # Outer Join
             for i in range(len(table_1.data)):
                 for j in range(len(table_2.data)):
-                    new_data = table_1[i]+table_2[j]
+                    new_data = table_1.data[i]+table_2.data[j]
                     new_table.data.append(new_data)
             return new_table
 
