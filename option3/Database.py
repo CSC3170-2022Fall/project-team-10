@@ -533,5 +533,4 @@ class Database:
                 for j in range(len(new_table.column)):
                     print(show_data[j],end='\t')
                 print()
-        print()
         return new_table
