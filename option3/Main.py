@@ -8,7 +8,7 @@ def main():
     #read from terminal
     quit_flag = 0
     while quit_flag == 0:
-        instr = input()
+        instr = input('> ')
         try:
             cmd = interpreter(instr)    # go to interpreter
             quit_flag = database.do_command(cmd)
