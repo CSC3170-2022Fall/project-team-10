@@ -9,8 +9,7 @@ class Database:
         if (command.type == "create table"):
             self.create_table(command.name[0], command.column)
         elif (command.type == "create table as"):
-            selected  = self.select(command.column, command.name[1:], command.condition)
-            self.create_table(command.name[0], selected)
+            self.create_table_as(command.name[0], command.column, command.name[1:], command.condition)
         elif (command.type == "load"):
             self.load(command.name[0])
         elif (command.type == "store"):
@@ -22,7 +21,7 @@ class Database:
         elif ((command.type == "quit") or (command.type == "exit")):
             return -1
         elif (command.type == "select"):
-            self.select(command.column,command.name,command.condition)
+            self.print_seleted(self.select(command.column,command.name,command.condition))
         return 0
 
     def create_table(self, table_name, column_name):
@@ -35,16 +34,18 @@ class Database:
         for name in column_name:
             table.column.append(name)
         self.tables.append(table)
+        print(f'table {table_name} created')
         return
 
-    def create_table_as(self, table_name, selected):
+    def create_table_as(self, table_name, selected_column, selected_table, selected_condition):
         for i in range(len(self.tables)):
             if self.tables[i].name == table_name:
                 self.tables.pop(i)
                 break
-        table = selected
+        table = self.select(selected_column, selected_table, selected_condition)
         table.name = table_name
         self.tables.append(table)
+        print(f'table {table_name} created')
         return
    
     # Return 0 for normally terminates, return -1 for terminates with error
@@ -172,6 +173,27 @@ class Database:
         for i in range(len(table.data)):
             print(pformat % tuple(map(str, table.data[i])))
         return 0
+
+    def print_seleted(self, table):
+        print('Select Results:')
+        if len(table.data) == 0:
+            print("The result is NONE.")
+        pformat = ""
+        # Find proper length for each column
+        for i in range(len(table.column)):
+            max_len = len(table.column[i])
+            for j in range(len(table.data)):
+                if (len(str(table.data[j][i])) > max_len):
+                    max_len = len(str(table.data[j][i]))
+            pformat += "%-"
+            pformat += str(max_len + 2)
+            pformat += "s"
+        # Print column name
+        print(pformat % tuple(map(str, table.column)))
+        # Print data
+        for i in range(len(table.data)):
+            print(pformat % tuple(map(str, table.data[i])))
+        return 
     
     def __satis(self,value_test,value_cond,relation):
         if relation == '=' and value_test == value_cond:
@@ -486,22 +508,22 @@ class Database:
                     new_data.append(test_data[idx])
                 new_table.data.append(new_data)
             
-        # show the data
-        print('Select Results:')
-        # print('新表column长度: ',len(new_table.column))
-        # print('Original data',ori_table.data[0][5],type(ori_table.data[0][5]))
-        for k in range(len(new_table.column)):
-            print(new_table.column[k],end='\t')
-        print()
-        if len(new_table.data) == 0:
-            print("The result is NONE.")
-        else:
-            # print('新表数据列长度: ',len(new_table.data))
-            for i in range(len(new_table.data)):
-                show_data = new_table.data[i] 
-                for j in range(len(new_table.column)):
-                    print(show_data[j],end='\t')
-                print()
-        print()
+        # # show the data
+        # print('Select Results:')
+        # # print('新表column长度: ',len(new_table.column))
+        # # print('Original data',ori_table.data[0][5],type(ori_table.data[0][5]))
+        # for k in range(len(new_table.column)):
+        #     print(new_table.column[k],end='\t')
+        # print()
+        # if len(new_table.data) == 0:
+        #     print("The result is NONE.")
+        # else:
+        #     # print('新表数据列长度: ',len(new_table.data))
+        #     for i in range(len(new_table.data)):
+        #         show_data = new_table.data[i] 
+        #         for j in range(len(new_table.column)):
+        #             print(show_data[j],end='\t')
+        #         print()
+        # print()
         return new_table
 
