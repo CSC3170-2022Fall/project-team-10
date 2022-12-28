@@ -10,6 +10,15 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
 - [ ] **Application with Database System(s)**
 - [x] **Implementation of a Database System**
 
+## Project Material:
+- Presentation Video:
+  - Our group recorded a video to explain the design logic of our DBMS and demonstrate the case.
+  - [The video link of Bilibili](https://www.bilibili.com/video/BV1u3411X7bv/?vd_source=51a38500fd91532549e8cb917491cc06)
+  - [The video link of Youtube](https://www.youtube.com/watch?v=qNXOF0NTCUs) 
+- Presentation Slide:
+  
+
+
 ## Team Members
 
 Our team consists of the following members, listed in the table below (the team leader is shown in the first row, and is marked with 🚩 behind his/her name):
@@ -18,7 +27,7 @@ Our team consists of the following members, listed in the table below (the team 
 
 | Student ID | Student Name | GitHub Account (in Email) |
 | ---------- | ------------ | ------------------------- |
-| 120090545  | 李佳齐 🚩 (Github name: AnakinSkywalker603)    | 120090545@link.cuhk.edu.cn |
+| 120090545  | 李佳齐 🚩     | 120090545@link.cuhk.edu.cn |
 | 119010289  | 万茜         | 119010289@link.cuhk.edu.cn |
 | 120090674  | 张泽萱(Github name: Gila-6)        | 120090674@link.cuhk.edu.cn |
 | 120090133  | 徐康裕(Github name: Barrxxx)        | 120090133@link.cuhk.edu.cn |
