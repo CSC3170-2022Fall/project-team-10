@@ -21,7 +21,7 @@ Our team consists of the following members, listed in the table below (the team 
 | 120090545  | 李佳齐 🚩     | 120090545@link.cuhk.edu.cn |
 | 119010289  | 万茜         | 119010289@link.cuhk.edu.cn |
 | 120090674  | 张泽萱(Github name: Gila-6)        | 120090674@link.cuhk.edu.cn |
-| 120090133  | 徐康裕        | 120090133@link.cuhk.edu.cn |
+| 120090133  | 徐康裕(Github name: Barrxxx)        | 120090133@link.cuhk.edu.cn |
 | 120090533  | 周泽睿        | 120090533@link.cuhk.edu.cn |
 | 120090311  | 樊天宇(Github name: 120090311)        | 120090311@link.cuhk.edu.cn |
 | 120090597  | 孙鑫昊        | 120090597@link.cuhk.edu.cn |
