@@ -57,5 +57,6 @@ To complete the test, our group uses python to develop this project. The source 
 
 If the project is developed successfully, the users can interact with this DBMS through typing SOL commands into the terminal. The DBMS can interpret these commands and do the corresponding operations. The data managed by this DBMS will be stored in .db files.
 
-
+## Other Material
+This is the [open source license](license) for project
 <!-- TODO -->
