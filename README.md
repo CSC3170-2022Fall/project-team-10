@@ -19,6 +19,9 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
   - You can check the [presentation slides](https://github.com/CSC3170-2022Fall/project-team10/blob/main/Project's%20Presentation%20Slide.pdf)
 - Detailed project report:
   - You can check the detailed implementation and design in this [report](CSC3170_Project_Report.pdf)
+- The whole database code is involved in [option3](option3)
+  - You simply need to run the [main.py](option3/main.py) to enter the user interface of DBMS
+  - We provided some [testcase](testcase.pdf) to test our database
   
 
 
