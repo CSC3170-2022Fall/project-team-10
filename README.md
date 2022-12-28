@@ -15,6 +15,8 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
   - Our group recorded a video to explain the design logic of our DBMS and demonstrate the case.
   - [The video link of Bilibili](https://www.bilibili.com/video/BV1u3411X7bv/?vd_source=51a38500fd91532549e8cb917491cc06)
   - [The video link of Youtube](https://www.youtube.com/watch?v=qNXOF0NTCUs) 
+- Presentation Slides:
+  - You can check the [presentation slides](https://github.com/CSC3170-2022Fall/project-team10/blob/main/Project's%20Presentation%20Slide.pdf)
   
 
 
