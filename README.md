@@ -17,6 +17,8 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
   - [The video link of Youtube](https://www.youtube.com/watch?v=qNXOF0NTCUs) 
 - Presentation Slides:
   - You can check the [presentation slides](https://github.com/CSC3170-2022Fall/project-team10/blob/main/Project's%20Presentation%20Slide.pdf)
+- Detailed project report:
+  - You can check the detailed implementation and design in this [report](CSC3170_Project_Report.pdf)
   
 
 
