@@ -34,7 +34,7 @@ Our team consists of the following members, listed in the table below (the team 
 | Student ID | Student Name | GitHub Account (in Email) |
 | ---------- | ------------ | ------------------------- |
 | 120090545  | 李佳齐 🚩 (Github name: AnakinSkywalker603)    | 120090545@link.cuhk.edu.cn |
-| 119010289  | 万茜         | 119010289@link.cuhk.edu.cn |
+| 119010289  | 万茜(Github name: Eggy-6)         | 119010289@link.cuhk.edu.cn |
 | 120090674  | 张泽萱(Github name: Gila-6)        | 120090674@link.cuhk.edu.cn |
 | 120090133  | 徐康裕(Github name: Barrxxx)        | 120090133@link.cuhk.edu.cn |
 | 120090533  | 周泽睿        | 120090533@link.cuhk.edu.cn |
