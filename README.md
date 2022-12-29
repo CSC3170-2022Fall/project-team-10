@@ -60,3 +60,6 @@ If the project is developed successfully, the users can interact with this DBMS 
 ## Other Material
 This is the [open source license](licence) for project
 <!-- TODO -->
+
+## Project Report
+Please check this [pdf](CSC3170_Project_Report.pdf) file.
